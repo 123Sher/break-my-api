@@ -1,7 +1,7 @@
 export const ACCESS_SECRET = "dev_secret_key_for_short_lived_access_tokens_987654321_abc";
 export const REFRESH_SECRET = "dev_secret_key_for_long_lived_refresh_cookies_123456789_xyz";
 
-export const ACCESS_EXPIRY = 15; 
+export const ACCESS_TTL_SECONDS = 15; 
 export const REFRESH_EXPIRY = "7d";
 
 // Cookie max-age expects absolute milliseconds

@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from 'express';
+import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 
 
@@ -8,12 +9,13 @@ import cookieParser from "cookie-parser";
 const app: Application = express();
 
 app.use(express.json());
-
 //For secure authentication systems, you want to store your session tokens (JWTs) 
 // inside protected browser cookies rather than local storage. 
 // This middleware reads the raw text headers sent by the client's browser,
 //  extracts the cookies, and organizes them perfectly into a req.cookies object.
 app.use(cookieParser());
+app.use('/api', authRouter);
+
 
 app.get("/api/health",(req:Request,res:Response) => {
     res.json({ok: true});
