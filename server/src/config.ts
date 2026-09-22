@@ -3,6 +3,7 @@ export const REFRESH_SECRET = "dev_secret_key_for_long_lived_refresh_cookies_123
 
 export const ACCESS_TTL_SECONDS = 15; 
 export const REFRESH_EXPIRY = "7d";
+export const REFRESH_DELAY_MS = 300;
 
 // Cookie max-age expects absolute milliseconds
 export const REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; 
