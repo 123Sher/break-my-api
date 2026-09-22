@@ -35,11 +35,15 @@ router.post("/login",(req:Request,res:Response) => {
         });
     }
 
+    //NOTE:  Both tokens are created completely fresh whenever a user performs a successful 
+    // login operation (e.g., submitting their username and password).
+
     //create access token
     const accessToken = jwt.sign({sub:username},ACCESS_SECRET,{
         expiresIn:ACCESS_TTL_SECONDS
     });
 
+    // create refresh token
     const refreshToken = jwt.sign({sub:username},REFRESH_SECRET,{
         expiresIn:REFRESH_EXPIRY
     });

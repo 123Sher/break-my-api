@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import authRouter from "./routes/auth.js";
 import protectedRouter from "./routes/protected.js";
 import adminRouter from "./routes/admin.js";
+import testingRouter from "./routes/testing.js";
 import cookieParser from "cookie-parser";
 
 
@@ -23,6 +24,8 @@ app.use('/api', authRouter); // ->  prefix "/api"
 app.use('/api',protectedRouter);
 
 app.use('/api',adminRouter);
+
+app.use('/api',testingRouter);
 
 
 app.get("/api/health",(req:Request,res:Response) => {
