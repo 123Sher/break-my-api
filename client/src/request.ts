@@ -1,5 +1,6 @@
 import { API_BASE_URL,DEFAULT_TIMEOUT_MS } from "./config";
 import { ApiError } from "./errors";
+import { getAccessToken } from "./tokenStore";
 import type { RequestConfig } from "./types";
 
 
@@ -45,10 +46,21 @@ export async function request<T>(path:string,config:RequestConfig={}): Promise<T
         config.signal.addEventListener("abort",() => controller.abort());
     }
 
+
+
+    const headers: Record<string, string> = { ...config.headers };
+    if(!config.skipAuth)
+    {
+        const token = getAccessToken();
+        if(token)
+        {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+    }
     try {
         const response = await fetch(`${API_BASE_URL}${path}`,{
             method: config.method ?? "GET",
-            headers: config.headers,
+            headers,
             body: config.body ?? null,
             signal: controller.signal, //tells the browser's native network engine to link 
             //this specific HTTP request to your controller.
