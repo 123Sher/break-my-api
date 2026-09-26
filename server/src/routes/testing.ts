@@ -1,7 +1,6 @@
 
 import {Router} from "express";
 import multer from "multer";
-import { MIMEType } from "node:util";
 
 const upload = multer({storage:multer.memoryStorage()});
 //multer.memoryStorage() keeps each uploaded file as a Buffer in memory 
