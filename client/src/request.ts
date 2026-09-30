@@ -112,3 +112,21 @@ export async function request<T>(path:string,config:RequestConfig={}): Promise<T
 
 
 }
+
+
+
+//What request() does, in order, every call:
+
+// Creates an AbortController, starts a timeout timer that aborts if the server is too slow
+// Forwards an external signal too (for manual cancellation)
+// Builds headers, auto-attaching Authorization: Bearer <token> unless skipAuth is set
+// Sends the fetch, with cookies included
+
+// If the response isn't ok (4xx/5xx), safely parses the body (even if it's not JSON) 
+// and throws a normalized ApiError with status/code/errors from the server
+
+// If something fails before getting a response at all 
+// (timeout, manual cancel, or real network failure), 
+// throws the matching ApiError (kind: "timeout" / "cancelled" / "network")
+
+// On success, parses and returns the body

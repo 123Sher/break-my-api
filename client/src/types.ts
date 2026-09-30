@@ -1,6 +1,10 @@
 //the keys method, header, body are standard keys for browsers native fetch
 //but the keys skipAuth, timeoutMs are customised for application.
 
+//this  interface extends the capabilities of the browser's native fetch API. 
+// It cleanly separates standard network options from your 
+// application-specific configurations like timeoutMs and skipAuth.
+
 
 export interface RequestConfig {
     method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -11,6 +15,7 @@ export interface RequestConfig {
     timeoutMs?:number;
     signal?:AbortSignal;//An AbortSignal is a built-in browser object 
     //that allows you to cancel an HTTP request after it has already started.
-    skipAuth?:boolean;
+    skipAuth?:boolean; // Because skipAuth is optional (skipAuth?: boolean), 
+    // it defaults to undefined if you do not explicitly pass it.
 
 }
