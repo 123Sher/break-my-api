@@ -12,5 +12,5 @@
   "license": "ISC",
   "type": "commonjs",
   "private": true,
-  "workspaces":["client","server"]
+  "workspaces": ["client", "server", "demo"]
 }

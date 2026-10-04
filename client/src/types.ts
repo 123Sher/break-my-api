@@ -17,5 +17,7 @@ export interface RequestConfig {
     //that allows you to cancel an HTTP request after it has already started.
     skipAuth?:boolean; // Because skipAuth is optional (skipAuth?: boolean), 
     // it defaults to undefined if you do not explicitly pass it.
+    _retried?: boolean; // internal: marks a request as already retried once after a refresh
+    credentials?:string;
 
 }

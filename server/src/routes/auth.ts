@@ -25,7 +25,7 @@ const USER = { username: "demo", password: "demo@123" };
 
 router.post("/login",(req:Request,res:Response) => {
     const {username, password} = req.body ?? {};
-
+    console.log("LOGIN BODY:", req.body);
     //if they dont match
     if(username!==USER.username || password!== USER.password)
     {
@@ -48,6 +48,7 @@ router.post("/login",(req:Request,res:Response) => {
         expiresIn:REFRESH_EXPIRY
     });
 
+    //explicitly setting the refresh token as an httpOnly cookie.
     res.cookie("refreshToken",refreshToken,{
         httpOnly: true, // This is the security magic! JavaScript cannot read this.
         secure: false, // plain http locally; must be true in production
@@ -110,6 +111,7 @@ router.post('/refresh',async(req,res) => {
         const accessToken = jwt.sign({sub:userId},ACCESS_SECRET,{
             expiresIn:ACCESS_TTL_SECONDS
         });
+        
 
           // 4. Send the new token back to the user
         return res.status(200).json({

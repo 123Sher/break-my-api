@@ -29,7 +29,7 @@ async function testCancel() {
     console.log(err);
   }
 }
-testCancel();
+//testCancel();
 
 //NETWORK FAILURE : KIND - network
 //Test proposed: stop the server (Ctrl+C in its terminal), then run:
@@ -75,9 +75,9 @@ async function testSuccess() {
   console.log("success:", data);
 }
 
-testHttpError();
-testValidation();
-testSuccess();
+// testHttpError();
+// testValidation();
+// testSuccess();
 
 async function testAuthHeader()
 {
@@ -92,7 +92,7 @@ async function testAuthHeader()
     }
 }
 
-testAuthHeader();
+//testAuthHeader();
 // setAccessToken("fake-token-123") stored the token
 // request("/protected") read it back via getAccessToken()
 // It built headers.Authorization = "Bearer fake-token-123"
@@ -100,3 +100,34 @@ testAuthHeader();
 // The server's requireAuth saw the header, passed the "does it exist and start with Bearer" check, then failed at jwt.verify because the token isn't a real signed JWT
 // The server replied 401 with INVALID_TOKEN
 // Your client parsed that into a proper ApiError with status: 401, code: "INVALID_TOKEN"
+
+
+
+
+async function testRealRefresh()
+{
+  const loginData = await request<{ accessToken: string; expiresIn: number }>('/login',{
+    method:"POST",
+    skipAuth:true,
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username:"demo",password:"demo@123"}),
+  });
+
+
+
+  console.log("Logged in, token expires in", loginData.expiresIn, "seconds");
+
+  const {setAccessToken} = await import("./tokenStore.js");
+  setAccessToken(loginData.accessToken);
+
+  console.log("Waiting for the token to expire...");
+  await new Promise((resolve) => setTimeout(resolve, 16000));
+
+  console.log("Calling /protected with an expired token...");
+  const result = await request("/protected");
+  console.log("SUCCESS, refresh must have kicked in:", result);
+
+
+}
+
+testRealRefresh();

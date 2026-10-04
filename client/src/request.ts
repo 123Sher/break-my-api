@@ -1,5 +1,6 @@
 import { API_BASE_URL,DEFAULT_TIMEOUT_MS } from "./config";
 import { ApiError } from "./errors";
+import { refreshAccessToken } from "./refresh";
 import { getAccessToken } from "./tokenStore";
 import type { RequestConfig } from "./types";
 
@@ -22,6 +23,7 @@ async function safeParseJson(response:Response): Promise<any>
 // "When this function finishes, it will return a Promise containing data that
 //  matches whatever type the caller specifies."
 export async function request<T>(path:string,config:RequestConfig={}): Promise<T>{
+    console.log(`${API_BASE_URL}${path}`);
     const controller = new AbortController();
     const timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
@@ -70,6 +72,26 @@ export async function request<T>(path:string,config:RequestConfig={}): Promise<T
         if(!response.ok)
         {
             const body = await safeParseJson(response);
+
+            //FOR REFRESH INTERCEPTOR
+            //check whether needs to be refreshed
+            const shouldRefresh = 
+            response.status === 401 && 
+            body?.code === 'TOKEN_EXPIRED' &&
+            !config._retried &&
+            !config.skipAuth;
+
+            if(shouldRefresh)
+            {
+                await refreshAccessToken();
+                //This calls request() again, with the same path and config, 
+                // but with _retried: true added. Because getAccessToken() inside the header-building 
+                // step reads the token fresh each time, this retry automatically picks up the new token 
+                // that refreshAccessToken() just stored, no extra wiring needed.
+                return request<T>(path,{...config,_retried:true});
+            }
+
+
             throw new ApiError(body?.message ?? `Request failed with status ${response.status}`,{
                 kind:"http",
                 status:response.status,
