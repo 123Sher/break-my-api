@@ -82,6 +82,13 @@ router.post('/refresh',async(req,res) => {
 
     await sleep(REFRESH_DELAY_MS);
 
+    //rejectRefresh never turns itself on. It starts as false and stays false
+    //  forever, unless you manually call POST /api/admin/reject-refresh/on.
+    //  It's not triggered by anything happening naturally during normal use,
+    //  like a token actually expiring or a real security event.
+    //  It's purely a switch you flip yourself, on purpose,
+    //  to simulate "the server decided to reject refreshing" for testing.
+
     if(state.rejectRefresh)
     {
         res.clearCookie("refreshToken",{path:'/api'});

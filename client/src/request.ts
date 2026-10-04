@@ -59,6 +59,10 @@ export async function request<T>(path:string,config:RequestConfig={}): Promise<T
             headers["Authorization"] = `Bearer ${token}`;
         }
     }
+    if(config.body instanceof FormData)
+    {
+        delete headers["Content-Type"]; //// let the browser set it, with the correct boundary
+    }
     try {
         const response = await fetch(`${API_BASE_URL}${path}`,{
             method: config.method ?? "GET",
@@ -88,6 +92,11 @@ export async function request<T>(path:string,config:RequestConfig={}): Promise<T
                 // but with _retried: true added. Because getAccessToken() inside the header-building 
                 // step reads the token fresh each time, this retry automatically picks up the new token 
                 // that refreshAccessToken() just stored, no extra wiring needed.
+
+
+                //, this retried is checked inside the shouldRefresh calculation, 
+                // which runs again because the entire request function is running 
+                // again from the top
                 return request<T>(path,{...config,_retried:true});
             }
 
